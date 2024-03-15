@@ -8,9 +8,13 @@ from tasks.forms import TaskForm
 # Create your views here.
 
 def index(request):
-   tasks = Task.objects.filter(user=request.user)
-   form = TaskForm()
-   return render(request, 'index.html', {'tasks': tasks,'form': form})
+    tasks = None
+    form = TaskForm()
+
+    if request.user.is_authenticated:
+        tasks = Task.objects.filter(user=request.user)
+
+    return render(request, 'index.html', {'tasks': tasks, 'form': form})
 
 def user_login(request):
     if request.method == 'POST':
