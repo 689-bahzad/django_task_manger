@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock  %}
+{% block content %}
+<form method="post" class="mt-5">
+    {% csrf_token %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4">Register</h5>
+                    {% for field in form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }}
+                        {% if field.errors %}
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" class="form-control{% if field.field.widget.input_type == 'password' %}{% endif %}{% if field.errors %} is-invalid{% endif %}" id="{{ field.id_for_label }}">
+                        <div class="invalid-feedback">
+                            {% for error in field.errors %}
+                            <strong>{{ error }}</strong>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ field }}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'login' %}">Already have an account? Login here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock  %}

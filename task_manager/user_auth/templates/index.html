@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<section class="vh-100" style="background-color: #30be8c;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-lg-9 col-xl-7">
+          <div class="card rounded-3">
+            <div class="card-body p-4">
+  
+              <h4 class="text-center my-3 pb-3">To Do App</h4>
+  
+              <form method="POST" action="{% url 'task_create' %}" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
+                {% csrf_token %}
+                <div class="col-12">
+                    <div class="form-outline">
+                        <input type="{{ form.title.field.widget.input_type }}" name="{{ form.title.html_name }}" id="form1" class="form-control{% if form.title.errors %} is-invalid{% endif %}" />
+                        <label class="form-label" for="form1">Enter a task here</label>
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.title.errors %}
+                                    <strong>{{ error }}</strong>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+  
+              <table class="table mb-4">
+                <thead>
+                  <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Todo item</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ task.title }}</td>
+                        <!-- Replace 'In progress' with the actual status -->
+                        {% if task.status == 0 %}
+                        <td>In progress</td>
+                        {% else %}
+                        <td>Completed</td>
+                        {% endif %}
+                        <td class="d-flex">
+                            <form action="{% url 'task_delete' task.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                            <form action="{% url 'task_finish' task.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success ms-1">Finished</button>
+                            </form>
+                        </td>                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+{% endif %}
+
+{% endblock %}
